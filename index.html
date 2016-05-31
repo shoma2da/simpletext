@@ -31,9 +31,10 @@
     <div id="fakeLoader"></div>
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="">SimpleText</a>
-        <p class="navbar-text" href="">手軽にテキストをシェアしよう</p>
+        <a class="navbar-brand" href="http://simpletext.link/">SimpleText</a>
+        <p class="navbar-text">手軽にテキストをシェアしよう</p>
       </div>
+
       <textarea name="introduction" id="textarea" cols="45" rows="8" placeholder="テキストを入力してください" class="form-control"></textarea>
       <button disabled id="save_button" type="button" class="btn btn-primary form-control">保存</button>
 
@@ -112,13 +113,18 @@
       // Show text
       if (id) {
         $("#fakeLoader").fakeLoader({ spinner:'spinner6' });
+        $(".navbar-text").text("このページのURLをシェアしてください")
+        textarea.attr('readonly', 'readonly')
+        save_button.hide()
 
         firebase.database().ref(id).once('value').then(function(data) {
-          value = data.val()['text'];
+          if (data.val() != null && data.val()['text']) {
+            value = data.val()['text'];
+          } else {
+            value = 'テキストは存在しません。URLを確認してください。'
+          }
           textarea.val(value)
-          textarea.attr('readonly', 'readonly')
           textarea.attr('rows', value.split("\n").length);
-          save_button.hide()
         });
 
       // Save text
